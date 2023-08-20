@@ -1,7 +1,12 @@
 HOCON (Human-Optimized Config Object Notation)
 =====
-[![GoDoc](https://godoc.org/github.com/go-akka/configuration?status.svg)](https://godoc.org/github.com/go-akka/configuration)
+[![GoDoc](https://godoc.org/github.com/JimWen/configuration?status.svg)](https://godoc.org/github.com/JimWen/configuration)
 [HOCON Docs](https://github.com/typesafehub/config/blob/master/HOCON.md).
+
+
+Fork from https://github.com/go-akka/configuration
+
+Merge with code in https://github.com/gurkankaymak/hocon
 
 > Currently, some features are not implemented, the API might be a little changed in the future.
 
@@ -13,7 +18,7 @@ package main
 
 import (
   "fmt"
-  "github.com/go-akka/configuration"
+  "github.com/JimWen/configuration"
 )
 
 var configText = `

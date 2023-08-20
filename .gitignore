@@ -1,24 +1,26 @@
-# Compiled Object files, Static and Dynamic libs (Shared Objects)
-*.o
-*.a
-*.so
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
 
-# Folders
-_obj
-_test
+# IDE - VSCode
+.vscode/*
 
-# Architecture specific extensions/prefixes
-*.[568vq]
-[568vq].out
+# System Files
+.DS_Store
+Thumbs.db
+/.run
 
-*.cgo1.go
-*.cgo2.c
-_cgo_defun.c
-_cgo_gotypes.go
-_cgo_export.*
+# Binary file
+bin
+vendor
 
-_testmain.go
+# Tmp file
+gl-code-quality-report.json
 
-*.exe
-*.test
-*.prof
+bin/
+main

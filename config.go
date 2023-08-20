@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-akka/configuration/hocon"
+	"github.com/JimWen/configuration/hocon"
 )
 
 type Config struct {
@@ -237,6 +237,54 @@ func (p *Config) GetStringList(path string) []string {
 	return obj.GetStringList()
 }
 
+func (p *Config) GetStringMapString(path string) map[string]string {
+	obj := p.GetNode(path)
+	if obj == nil {
+		return nil
+	}
+	return obj.GetStringMapString()
+}
+
+func (p *Config) GetStringMapBool(path string) map[string]bool {
+	obj := p.GetNode(path)
+	if obj == nil {
+		return nil
+	}
+	return obj.GetStringMapBool()
+}
+
+func (p *Config) GetStringMapInt32(path string) map[string]int32 {
+	obj := p.GetNode(path)
+	if obj == nil {
+		return nil
+	}
+	return obj.GetStringMapInt32()
+}
+
+func (p *Config) GetStringMapInt64(path string) map[string]int64 {
+	obj := p.GetNode(path)
+	if obj == nil {
+		return nil
+	}
+	return obj.GetStringMapInt64()
+}
+
+func (p *Config) GetStringMapFloat32(path string) map[string]float32 {
+	obj := p.GetNode(path)
+	if obj == nil {
+		return nil
+	}
+	return obj.GetStringMapFloat32()
+}
+
+func (p *Config) GetStringMapFloat64(path string) map[string]float64 {
+	obj := p.GetNode(path)
+	if obj == nil {
+		return nil
+	}
+	return obj.GetStringMapFloat64()
+}
+
 func (p *Config) GetConfig(path string) *Config {
 	if p == nil {
 		return nil
@@ -260,8 +308,41 @@ func (p *Config) GetConfig(path string) *Config {
 	return NewConfigFromRoot(hocon.NewHoconRoot(value))
 }
 
+func (p *Config) GetObject(path string) *Config {
+	return p.GetConfig(path)
+}
+
+func (p *Config) GetObjectArray(path string) []*Config {
+	a := p.GetNode(path).GetArray()
+	var ret = make([]*Config, 0, len(a))
+	for _, value := range a {
+		ret = append(ret, NewConfigFromRoot(hocon.NewHoconRoot(value)))
+	}
+
+	return ret
+}
+
+// may be add cpu cost with range operation in convert
+func (p *Config) GetObjectMap(path string) map[string]*Config {
+	var ret = make(map[string]*Config)
+	for key, value := range p.GetMapValue(path) {
+		ret[key] = NewConfigFromRoot(hocon.NewHoconRoot(value))
+	}
+
+	return ret
+}
+
 func (p *Config) GetValue(path string) *hocon.HoconValue {
 	return p.GetNode(path)
+}
+
+func (p *Config) GetArrayValue(path string) []*hocon.HoconValue {
+	return p.GetNode(path).GetArray()
+}
+
+func (p *Config) GetMapValue(path string) map[string]*hocon.HoconValue {
+	o := p.GetNode(path).GetObject()
+	return o.GetMapValue()
 }
 
 func (p *Config) WithFallback(fallback *Config) *Config {

@@ -364,6 +364,60 @@ func (p *HoconValue) GetStringList() []string {
 	return items
 }
 
+func (p *HoconValue) GetStringMapString() map[string]string {
+	obj := p.GetObject()
+	items := make(map[string]string)
+	for k, v := range obj.GetMapValue() {
+		items[k] = v.GetString()
+	}
+	return items
+}
+
+func (p *HoconValue) GetStringMapBool() map[string]bool {
+	obj := p.GetObject()
+	items := make(map[string]bool)
+	for k, v := range obj.GetMapValue() {
+		items[k] = v.GetBoolean()
+	}
+	return items
+}
+
+func (p *HoconValue) GetStringMapInt32() map[string]int32 {
+	obj := p.GetObject()
+	items := make(map[string]int32)
+	for k, v := range obj.GetMapValue() {
+		items[k] = v.GetInt32()
+	}
+	return items
+}
+
+func (p *HoconValue) GetStringMapInt64() map[string]int64 {
+	obj := p.GetObject()
+	items := make(map[string]int64)
+	for k, v := range obj.GetMapValue() {
+		items[k] = v.GetInt64()
+	}
+	return items
+}
+
+func (p *HoconValue) GetStringMapFloat32() map[string]float32 {
+	obj := p.GetObject()
+	items := make(map[string]float32)
+	for k, v := range obj.GetMapValue() {
+		items[k] = v.GetFloat32()
+	}
+	return items
+}
+
+func (p *HoconValue) GetStringMapFloat64() map[string]float64 {
+	obj := p.GetObject()
+	items := make(map[string]float64)
+	for k, v := range obj.GetMapValue() {
+		items[k] = v.GetFloat64()
+	}
+	return items
+}
+
 func (p *HoconValue) GetArray() []*HoconValue {
 	var arrs []*HoconValue
 

@@ -33,6 +33,10 @@ func (p *HoconObject) GetKeys() []string {
 	return p.keys
 }
 
+func (p *HoconObject) GetMapValue() map[string]*HoconValue {
+	return p.items
+}
+
 func (p *HoconObject) Unwrapped() map[string]interface{} {
 	if len(p.items) == 0 {
 		return nil

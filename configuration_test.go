@@ -43,3 +43,23 @@ func TestParseKeyOrder(t *testing.T) {
 
 	wg.Wait()
 }
+
+func TestArrayParse(t *testing.T) {
+	conf := LoadConfig("tests/t3.conf")
+
+	fmt.Println(conf.GetString("test.out.a.b.c.d.groups.g2.o1.order"))
+
+	arr1 := conf.GetObjectArray("test.out.a.b.c.d.groups.g2.o3")
+	fmt.Println(arr1[0].GetString("key1"))
+	fmt.Println(arr1[0].GetString("key2"))
+
+	l := arr1[2].GetStringList("key222")
+	fmt.Println(l)
+
+	fmt.Println(arr1[0].GetStringMapString(""))
+
+	map2 := conf.GetMapValue("test.out.a.b.c.d.groups.g2")
+	for k, v := range map2 {
+		fmt.Printf("key:%s -> value:%v\n", k, v)
+	}
+}
