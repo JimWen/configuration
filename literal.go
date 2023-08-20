@@ -1,4 +1,4 @@
-package hocon
+package configuration
 
 type HoconLiteral struct {
 	value string

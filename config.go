@@ -2,19 +2,16 @@ package configuration
 
 import (
 	"math/big"
-	"strings"
 	"time"
-
-	"github.com/JimWen/configuration/hocon"
 )
 
 type Config struct {
-	root          *hocon.HoconValue
-	substitutions []*hocon.HoconSubstitution
+	root          *HoconValue
+	substitutions []*HoconSubstitution
 	fallback      *Config
 }
 
-func NewConfigFromRoot(root *hocon.HoconRoot) *Config {
+func NewConfigFromRoot(root *HoconRoot) *Config {
 	if root.Value() == nil {
 		panic("The root value cannot be null.")
 	}
@@ -40,7 +37,7 @@ func (p *Config) IsEmpty() bool {
 	return p == nil || p.root == nil || p.root.IsEmpty()
 }
 
-func (p *Config) Root() *hocon.HoconValue {
+func (p *Config) Root() *HoconValue {
 	return p.root
 }
 
@@ -62,7 +59,7 @@ func (p *Config) Copy(fallback ...*Config) *Config {
 	}
 }
 
-func (p *Config) GetNode(path string) *hocon.HoconValue {
+func (p *Config) GetNode(path string) *HoconValue {
 	if p == nil {
 		return nil
 	}
@@ -299,13 +296,13 @@ func (p *Config) GetConfig(path string) *Config {
 		if value == nil {
 			return f
 		}
-		return NewConfigFromRoot(hocon.NewHoconRoot(value)).WithFallback(f)
+		return NewConfigFromRoot(NewHoconRoot(value)).WithFallback(f)
 	}
 
 	if value == nil {
 		return nil
 	}
-	return NewConfigFromRoot(hocon.NewHoconRoot(value))
+	return NewConfigFromRoot(NewHoconRoot(value))
 }
 
 func (p *Config) GetObject(path string) *Config {
@@ -316,7 +313,7 @@ func (p *Config) GetObjectArray(path string) []*Config {
 	a := p.GetNode(path).GetArray()
 	var ret = make([]*Config, 0, len(a))
 	for _, value := range a {
-		ret = append(ret, NewConfigFromRoot(hocon.NewHoconRoot(value)))
+		ret = append(ret, NewConfigFromRoot(NewHoconRoot(value)))
 	}
 
 	return ret
@@ -326,21 +323,21 @@ func (p *Config) GetObjectArray(path string) []*Config {
 func (p *Config) GetObjectMap(path string) map[string]*Config {
 	var ret = make(map[string]*Config)
 	for key, value := range p.GetMapValue(path) {
-		ret[key] = NewConfigFromRoot(hocon.NewHoconRoot(value))
+		ret[key] = NewConfigFromRoot(NewHoconRoot(value))
 	}
 
 	return ret
 }
 
-func (p *Config) GetValue(path string) *hocon.HoconValue {
+func (p *Config) GetValue(path string) *HoconValue {
 	return p.GetNode(path)
 }
 
-func (p *Config) GetArrayValue(path string) []*hocon.HoconValue {
+func (p *Config) GetArrayValue(path string) []*HoconValue {
 	return p.GetNode(path).GetArray()
 }
 
-func (p *Config) GetMapValue(path string) map[string]*hocon.HoconValue {
+func (p *Config) GetMapValue(path string) map[string]*HoconValue {
 	o := p.GetNode(path).GetObject()
 	return o.GetMapValue()
 }
@@ -355,7 +352,7 @@ func (p *Config) WithFallback(fallback *Config) *Config {
 	}
 
 	mergedRoot := p.root.GetObject().MergeImmutable(fallback.root.GetObject())
-	newRoot := hocon.NewHoconValue()
+	newRoot := NewHoconValue()
 
 	newRoot.AppendValue(mergedRoot)
 
@@ -389,31 +386,17 @@ func (p *Config) IsArray(path string) bool {
 }
 
 func (p *Config) AddConfig(textConfig string, fallbackConfig *Config) *Config {
-	root := hocon.Parse(textConfig, nil)
+	root := Parse(textConfig, nil)
 	config := NewConfigFromRoot(root)
 	return config.WithFallback(fallbackConfig)
 }
 
 func (p *Config) AddConfigWithTextFallback(config *Config, textFallback string) *Config {
-	fallbackRoot := hocon.Parse(textFallback, nil)
+	fallbackRoot := Parse(textFallback, nil)
 	fallbackConfig := NewConfigFromRoot(fallbackRoot)
 	return config.WithFallback(fallbackConfig)
 }
 
 func (p Config) String() string {
 	return p.root.String()
-}
-
-func splitDottedPathHonouringQuotes(path string) []string {
-	tmp1 := strings.Split(path, "\"")
-	var values []string
-	for i := 0; i < len(tmp1); i++ {
-		tmp2 := strings.Split(tmp1[i], ".")
-		for j := 0; j < len(tmp2); j++ {
-			if len(tmp2[j]) > 0 {
-				values = append(values, tmp2[j])
-			}
-		}
-	}
-	return values
 }

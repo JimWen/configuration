@@ -1,4 +1,4 @@
-package hocon
+package configuration
 
 type TokenType int
 

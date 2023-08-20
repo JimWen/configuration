@@ -3,18 +3,16 @@ package configuration
 import (
 	"encoding/json"
 	"io/ioutil"
-
-	"github.com/JimWen/configuration/hocon"
 )
 
-func ParseString(text string, includeCallback ...hocon.IncludeCallback) *Config {
-	var callback hocon.IncludeCallback
+func ParseString(text string, includeCallback ...IncludeCallback) *Config {
+	var callback IncludeCallback
 	if len(includeCallback) > 0 {
 		callback = includeCallback[0]
 	} else {
 		callback = defaultIncludeCallback
 	}
-	root := hocon.Parse(text, callback)
+	root := Parse(text, callback)
 	return NewConfigFromRoot(root)
 }
 
@@ -36,11 +34,11 @@ func FromObject(obj interface{}) *Config {
 	return ParseString(string(data), defaultIncludeCallback)
 }
 
-func defaultIncludeCallback(filename string) *hocon.HoconRoot {
+func defaultIncludeCallback(filename string) *HoconRoot {
 	data, err := ioutil.ReadFile(filename)
 	if err != nil {
 		panic(err)
 	}
 
-	return hocon.Parse(string(data), defaultIncludeCallback)
+	return Parse(string(data), defaultIncludeCallback)
 }

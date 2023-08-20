@@ -1,4 +1,4 @@
-package hocon
+package configuration
 
 import (
 	"fmt"
@@ -45,6 +45,14 @@ type HoconValue struct {
 
 func NewHoconValue() *HoconValue {
 	return &HoconValue{}
+}
+
+func (p *HoconValue) ToConfig() *Config {
+	return NewConfigFromRoot(NewHoconRoot(p))
+}
+
+func (p *HoconValue) ToConfigWithCallback() *Config {
+	return NewConfigFromRoot(NewHoconRoot(p))
 }
 
 func (p *HoconValue) IsEmpty() bool {
