@@ -3,6 +3,7 @@ package configuration
 import (
 	"fmt"
 	"math/big"
+	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
@@ -532,4 +533,76 @@ func parsePositiveValue(v string) float64 {
 		panic("Expected a positive value instead of " + v)
 	}
 	return value
+}
+
+func NewHoconValueWithElement(element HoconElement) *HoconValue {
+	v := &HoconValue{}
+	v.AppendValue(element)
+	return v
+}
+
+func NewString(value string) *HoconValue {
+	strElement := &HoconLiteral{value: value} // 假设 HoconLiteral 是用于存储字符串的类型
+	return NewHoconValueWithElement(strElement)
+}
+
+func NewBool(value bool) *HoconValue {
+	var boolStr string
+	if value {
+		boolStr = "true"
+	} else {
+		boolStr = "false"
+	}
+	boolElement := &HoconLiteral{value: boolStr}
+	return NewHoconValueWithElement(boolElement)
+}
+
+func NewInt(value int) *HoconValue {
+	intStr := strconv.Itoa(value)
+	intElement := &HoconLiteral{value: intStr}
+	return NewHoconValueWithElement(intElement)
+}
+
+func NewFloat(value float64) *HoconValue {
+	floatStr := strconv.FormatFloat(value, 'f', -1, 64)
+	floatElement := &HoconLiteral{value: floatStr}
+	return NewHoconValueWithElement(floatElement)
+}
+
+func NewArray(values []*HoconValue) *HoconValue {
+	arrayElement := &HoconArray{values: values} // 假设 HoconArray 是用于存储数组的类型
+	return NewHoconValueWithElement(arrayElement)
+}
+
+func NewObject(obj *HoconObject) *HoconValue {
+	return NewHoconValueWithElement(obj)
+}
+
+func NewValue(value any) *HoconValue {
+	switch v := value.(type) {
+	case string:
+		return NewString(v)
+	case bool:
+		return NewBool(v)
+	case int:
+		return NewInt(v)
+	case int64:
+		return NewInt(int(v))
+	case float64:
+		return NewFloat(v)
+	case []any:
+		var values []*HoconValue
+		for _, item := range v {
+			values = append(values, NewValue(item))
+		}
+		return NewArray(values)
+	case map[string]any:
+		hoconObj := &HoconObject{items: make(map[string]*HoconValue)}
+		for key, val := range v {
+			hoconObj.items[key] = NewValue(val)
+		}
+		return NewObject(hoconObj)
+	default:
+		panic(fmt.Sprintf("Unsupported type: %s", reflect.TypeOf(v).String()))
+	}
 }
